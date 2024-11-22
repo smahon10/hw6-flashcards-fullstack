@@ -3,3 +3,9 @@ export interface DeckType {
     title: string;
     numberOfCards: number;
 }
+
+export interface CardType {
+    id: string;
+    front: string;
+    back: string;
+}

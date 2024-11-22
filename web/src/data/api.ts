@@ -1,13 +1,13 @@
 import { API_URL } from "@/env";
-import { DeckType } from "./types";
+import { DeckType, CardType } from "./types";
 
 // Fetch all decks
 export const fetchDecks = async (): Promise<DeckType[]> => {
-  const response = await fetch(`${API_URL}/decks`);
+  const response = await fetch(`${API_URL}/decks?sort=desc`);
   if (!response.ok) {
     throw new Error(`API request failed! with status: ${response.status}`);
   }
-  const data: DeckType[] = await response.json();
+  const { data }: { data: DeckType[] } = await response.json();
   return data;
 };
 
@@ -49,4 +49,69 @@ export const deleteDeck = async (id: number): Promise<boolean> => {
       throw new Error(`API request failed! with status: ${response.status}`);
     }
     return true;
+};
+
+// Fetch all cards from a deck
+export const fetchCard = async (deckId: number): Promise<CardType[]> => {
+  const response = await fetch(`${API_URL}/decks/${deckId}/cards?sort=desc`);
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  const { data }: { data: CardType[] } = await response.json();
+  return data;
+};
+
+// Create a card for a deck
+export const createCard = async (
+  deckId: number,
+  content: string,
+): Promise<CardType> => {
+  const response = await fetch(`${API_URL}/decks/${deckId}/cards`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ content }),
+  });
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  const data: CardType = await response.json();
+  return data;
+};
+
+// Edit a card from a deck
+export const editCard = async (
+  deckId: string,
+  cardId: string,
+  content: string,
+): Promise<CardType> => {
+  const response = await fetch(
+    `${API_URL}/decks/${deckId}/cards/${cardId}`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content }),
+    },
+  );
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  const data: CardType = await response.json();
+  return data;
+};
+
+// Delete a card from a deck
+export const deleteCard = async (
+  deckId: string,
+  cardId: string,
+): Promise<boolean> => {
+  const response = await fetch(
+    `${API_URL}/decks/${deckId}/cards/${cardId}`,
+    {
+      method: "DELETE",
+    },
+  );
+  if (!response.ok) {
+    throw new Error(`API request failed! with status: ${response.status}`);
+  }
+  return true;
 };

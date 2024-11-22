@@ -13,7 +13,6 @@ const Decks = () => {
   return (
     <div>
       {decks
-        .sort((a, b) => (a.id > b.id ? 1 : -1))
         .map((deck) => (
             <Deck key={deck.id} deck={deck} setDecks={setDecks}/>
         ))}
